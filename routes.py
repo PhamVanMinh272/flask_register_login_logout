@@ -2,7 +2,7 @@ from app import app, db, bcrypt
 from flask import render_template, redirect, url_for, flash, request
 from forms import RegistrationForm, LoginForm
 from models import User
-from flask_login import login_user, logout_user
+from flask_login import login_user, logout_user, login_required, current_user
 
 @app.route('/')
 def home():
@@ -30,7 +30,7 @@ def login():
             login_user(user)
             next_page = request.args.get('next')
             flash('Log in successful!', 'success')
-            return redirect(next_page) if next_page else redirect(url_for('home'))
+            return redirect(next_page) if next_page else redirect(url_for('profile'))
     return render_template('login.html', title='Login', form=form)
 
 @app.route('/logout/')
@@ -38,3 +38,9 @@ def logout():
     logout_user()
     flash('You have just logged out!', 'success')
     return redirect(url_for('home'))
+
+
+@app.route('/profile/')
+@login_required
+def profile():
+    return render_template("profile.html")
